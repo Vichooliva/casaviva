@@ -11,9 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelEditBtn = document.getElementById('cancel-edit');
     const statusMessage = document.getElementById('status-message');
     const importBtn = document.getElementById('import-btn');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const toggleUrlInputBtn = document.getElementById('toggle-url-input');
+    const imagesInput = document.getElementById('images-input');
 
     // --- State ---
     let properties = [];
+    let currentImages = []; // Array to hold image URLs/Base64 for the current form
 
     // --- Login Logic ---
     loginForm.addEventListener('submit', (e) => {
@@ -35,6 +39,99 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             loginError.style.display = 'block';
         }
+    });
+
+    // --- Toggle URL Input ---
+    toggleUrlInputBtn.addEventListener('click', () => {
+        if (imagesInput.style.display === 'none') {
+            imagesInput.style.display = 'block';
+            toggleUrlInputBtn.textContent = 'Ocultar URLs manuales';
+        } else {
+            imagesInput.style.display = 'none';
+            toggleUrlInputBtn.textContent = 'Ver/Editar URLs manualmente';
+        }
+    });
+
+    // --- Image Handling ---
+    window.renderImagePreviews = () => {
+        imagePreviewContainer.innerHTML = '';
+        currentImages.forEach((url, index) => {
+            const div = document.createElement('div');
+            div.style.cssText = 'position: relative; border: 1px solid #444; border-radius: 4px; overflow: hidden; aspect-ratio: 1;';
+            
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+            
+            const actions = document.createElement('div');
+            actions.style.cssText = 'position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: space-between; padding: 5px;';
+            
+            const coverBtn = document.createElement('button');
+            coverBtn.innerHTML = index === 0 ? '★' : '☆';
+            coverBtn.title = 'Hacer Portada';
+            coverBtn.type = 'button';
+            coverBtn.style.cssText = `background: none; border: none; color: ${index === 0 ? '#FFD700' : '#fff'}; cursor: pointer; font-size: 1.2rem;`;
+            coverBtn.onclick = () => setCoverImage(index);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '🗑';
+            deleteBtn.title = 'Eliminar';
+            deleteBtn.type = 'button';
+            deleteBtn.style.cssText = 'background: none; border: none; color: #ff6b6b; cursor: pointer;';
+            deleteBtn.onclick = () => removeImage(index);
+
+            actions.appendChild(coverBtn);
+            actions.appendChild(deleteBtn);
+            div.appendChild(img);
+            div.appendChild(actions);
+            imagePreviewContainer.appendChild(div);
+        });
+        
+        // Sync with textarea
+        imagesInput.value = currentImages.join('\n');
+    };
+
+    window.setCoverImage = (index) => {
+        if (index === 0) return;
+        const img = currentImages.splice(index, 1)[0];
+        currentImages.unshift(img);
+        renderImagePreviews();
+    };
+
+    window.removeImage = (index) => {
+        currentImages.splice(index, 1);
+        renderImagePreviews();
+    };
+
+    // Handle File Selection
+    document.getElementById('image-upload').addEventListener('change', async (e) => {
+        const files = e.target.files;
+        if (files.length === 0) return;
+
+        const statusSpan = document.getElementById('upload-status');
+        statusSpan.textContent = 'Procesando...';
+
+        try {
+            for (let i = 0; i < files.length; i++) {
+                const base64 = await compressImage(files[i]);
+                currentImages.push(base64);
+            }
+            renderImagePreviews();
+            statusSpan.textContent = '';
+        } catch (error) {
+            console.error(error);
+            statusSpan.textContent = 'Error al procesar imagen.';
+        }
+        
+        // Reset input so same file can be selected again if needed
+        e.target.value = '';
+    });
+
+    // Sync manual URL input changes to preview
+    imagesInput.addEventListener('change', () => {
+        const urls = imagesInput.value.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+        currentImages = urls;
+        renderImagePreviews();
     });
 
     // --- Import Logic ---
@@ -114,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fas fa-map-marker-alt"></i> ${prop.location} | 
                         <span style="color: var(--primary-green); font-weight: bold;">${prop.price}</span>
                         ${prop.status === 'sold' ? '<span style="background: #d32f2f; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px;">VENDIDA</span>' : ''}
+                        ${prop.status === 'pending' ? '<span style="background: #FF9800; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; margin-left: 10px;">PENDIENTE</span>' : ''}
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px;">
@@ -157,8 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('description').value = prop.description;
         document.getElementById('status').value = prop.status;
         
-        const images = prop.images || (prop.image ? [prop.image] : []);
-        document.getElementById('images-input').value = images.join('\n');
+        // Load images into state
+        currentImages = prop.images || (prop.image ? [prop.image] : []);
+        renderImagePreviews();
 
         editIdInput.value = prop.id;
         document.getElementById('form-title').textContent = 'Editando: ' + prop.title;
@@ -179,48 +278,18 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     cancelEditBtn.addEventListener('click', () => {
-        propertyForm.reset();
-        editIdInput.value = '';
-        document.getElementById('form-title').textContent = 'Agregar / Editar Propiedad';
-        cancelEditBtn.style.display = 'none';
+        resetForm();
     });
 
     propertyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // 1. Handle File Uploads (Compressed Base64)
-        const fileInput = document.getElementById('image-upload');
-        const files = fileInput.files;
-        let uploadedUrls = [];
+        // Use currentImages state which is already populated by file selection or manual input
+        const finalImages = [...currentImages];
 
-        if (files.length > 0) {
-            showStatus('Procesando imágenes... por favor espera.', 'info');
-            const submitBtn = propertyForm.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-
-            try {
-                for (let i = 0; i < files.length; i++) {
-                    const base64 = await compressImage(files[i]);
-                    uploadedUrls.push(base64);
-                }
-            } catch (error) {
-                console.error("Error processing images: ", error);
-                showStatus('Error al procesar imágenes: ' + error.message, 'error');
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Guardar Propiedad';
-                return;
-            }
-            
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Guardar Propiedad';
+        if (finalImages.length === 0) {
+             if(!confirm("¿Estás seguro de guardar sin imágenes?")) return;
         }
-
-        // 2. Combine with existing text URLs
-        const imagesText = document.getElementById('images-input').value;
-        const textUrls = imagesText.split('\n').map(url => url.trim()).filter(url => url.length > 0);
-        
-        const finalImages = [...textUrls, ...uploadedUrls];
 
         // Check for size limit (approx 1MB for Firestore doc)
         const totalSize = JSON.stringify(finalImages).length;
@@ -297,5 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('form-title').textContent = 'Agregar / Editar Propiedad';
         cancelEditBtn.style.display = 'none';
         document.getElementById('image-upload').value = ''; // Clear file input
+        currentImages = [];
+        renderImagePreviews();
     }
 });

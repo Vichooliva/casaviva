@@ -1,9 +1,17 @@
+let allProperties = []; // Store all properties globally for filtering
+
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('properties-grid');
     const WHATSAPP_NUMBER = '56998468181';
 
     // Only run if we are on the index page with the grid
     if (grid) {
+        // Setup Filter Listeners
+        document.getElementById('filter-btn').addEventListener('click', applyFilters);
+        document.getElementById('search-input').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') applyFilters();
+        });
+
         // Wait for Firebase to initialize
         const checkDb = setInterval(() => {
             if (typeof db !== 'undefined') {
@@ -18,15 +26,67 @@ function loadPropertiesFromFirebase() {
     const grid = document.getElementById('properties-grid');
     
     db.collection("properties").get().then((querySnapshot) => {
-        const properties = [];
+        allProperties = [];
         querySnapshot.forEach((doc) => {
-            properties.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            // Filter out pending properties
+            if (data.status !== 'pending') {
+                allProperties.push({ id: doc.id, ...data });
+            }
         });
-        renderProperties(properties);
+        // Initial render (sorted by newest by default if we had a date field, but here just as is)
+        applyFilters(); 
     }).catch((error) => {
         console.error("Error getting documents: ", error);
         grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1/-1;">Hubo un error al cargar las propiedades.</p>';
     });
+}
+
+function applyFilters() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
+    const sort = document.getElementById('sort-select').value;
+
+    let filtered = allProperties.filter(p => {
+        // Text Search
+        const matchText = p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search);
+        
+        // Price Parsing (Handle "UF 10.000" or "$100.000")
+        // This is a simple parser, assumes the first number found is the price value
+        const priceString = p.price.replace(/\./g, '').replace(/,/g, '.'); // Remove thousands separator
+        const priceValue = parseFloat(priceString.match(/[\d\.]+/)) || 0;
+        
+        // Note: This compares raw numbers. If mixing UF and CLP, this will be inaccurate without currency conversion.
+        // For now, we assume the user filters based on the dominant currency number.
+        const matchPrice = priceValue >= minPrice && priceValue <= maxPrice;
+
+        return matchText && matchPrice;
+    });
+
+    // Sorting
+    if (sort === 'price-asc') {
+        filtered.sort((a, b) => {
+            const pA = parseFloat(a.price.replace(/\./g, '').replace(/,/g, '.').match(/[\d\.]+/)) || 0;
+            const pB = parseFloat(b.price.replace(/\./g, '').replace(/,/g, '.').match(/[\d\.]+/)) || 0;
+            return pA - pB;
+        });
+    } else if (sort === 'price-desc') {
+        filtered.sort((a, b) => {
+            const pA = parseFloat(a.price.replace(/\./g, '').replace(/,/g, '.').match(/[\d\.]+/)) || 0;
+            const pB = parseFloat(b.price.replace(/\./g, '').replace(/,/g, '.').match(/[\d\.]+/)) || 0;
+            return pB - pA;
+        });
+    } else if (sort === 'newest') {
+        // Sort by createdAt if available
+        filtered.sort((a, b) => {
+            const dateA = a.createdAt ? a.createdAt.seconds : 0;
+            const dateB = b.createdAt ? b.createdAt.seconds : 0;
+            return dateB - dateA;
+        });
+    }
+
+    renderProperties(filtered);
 }
 
 function renderProperties(properties) {
@@ -91,6 +151,10 @@ function loadPropertyDetail(id) {
             db.collection("properties").doc(id).get().then((doc) => {
                 if (doc.exists) {
                     const property = { id: doc.id, ...doc.data() };
+                    if (property.status === 'pending') {
+                        container.innerHTML = '<div style="text-align: center; padding: 50px;"><h3>Propiedad en Revisión</h3><p>Esta propiedad está siendo revisada por nuestros administradores.</p><a href="index.html" class="contact-btn" style="display: inline-block; width: auto; margin-top: 20px;">Volver al Inicio</a></div>';
+                        return;
+                    }
                     renderDetail(property, container, WHATSAPP_NUMBER);
                 } else {
                     container.innerHTML = '<p>Propiedad no encontrada.</p>';

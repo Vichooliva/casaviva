@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Casa Viva Propiedades</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=1.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -71,11 +72,22 @@
 
                 <div class="form-group">
                     <label>Imágenes</label>
-                    <small style="color: #888; display: block; margin-bottom: 5px;">Sube imágenes desde tu computador o pega URLs.</small>
+                    <small style="color: #888; display: block; margin-bottom: 5px;">Sube imágenes (se comprimen automáticamente) o pega URLs. La primera imagen será la portada (★).</small>
                     
-                    <input type="file" id="image-upload" multiple accept="image/*" style="margin-bottom: 10px; color: white;">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                        <label for="image-upload" class="contact-btn" style="cursor: pointer; margin: 0; font-size: 0.9rem;">
+                            <i class="fas fa-camera"></i> Subir Fotos
+                        </label>
+                        <input type="file" id="image-upload" multiple accept="image/*" style="display: none;">
+                        <span id="upload-status" style="color: #aaa; font-size: 0.9rem;"></span>
+                    </div>
+
+                    <div id="image-preview-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-bottom: 10px;">
+                        <!-- Previews will appear here -->
+                    </div>
                     
-                    <textarea id="images-input" placeholder="O pega URLs aquí (una por línea)..." style="height: 100px;"></textarea>
+                    <textarea id="images-input" placeholder="O pega URLs aquí (una por línea)..." style="height: 60px; display: none;"></textarea>
+                    <button type="button" id="toggle-url-input" style="background: none; border: none; color: var(--primary-gold); cursor: pointer; font-size: 0.8rem; text-decoration: underline;">Ver/Editar URLs manualmente</button>
                 </div>
 
                 <div class="form-group">
@@ -88,6 +100,7 @@
                     <select id="status">
                         <option value="available">Disponible</option>
                         <option value="sold">Vendida</option>
+                        <option value="pending">Pendiente de Revisión</option>
                     </select>
                 </div>
 
@@ -98,6 +111,7 @@
             </form>
 
             <div id="status-message" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none; text-align: center; font-weight: bold;"></div>
+            <div style="text-align: center; margin-top: 30px; color: #444; font-size: 0.8rem;">Versión Admin: 2.0 (Multi-imagen activado)</div>
         </div>
     </main>
 
