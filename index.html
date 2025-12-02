@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Viva Propiedades</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <a href="admin.html" class="admin-btn"><i class="fas fa-lock"></i> Admin</a>
+        <div class="logo-container">
+            <h1>CASA<span>•</span>VIVA</h1>
+            <div class="subtitle">PROPIEDADES</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="properties-grid" class="properties-grid">
+            <!-- Properties will be loaded here by JS -->
+            <div style="text-align: center; width: 100%; grid-column: 1/-1; color: var(--text-muted);">
+                <i class="fas fa-spinner fa-spin"></i> Cargando propiedades...
+            </div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid #333; margin-top: 40px;">
+        <p>&copy; 2025 Casa Viva Propiedades. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

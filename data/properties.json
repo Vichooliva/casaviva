@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "Hermosa Casa en La Reina",
+    "price": "UF 12.500",
+    "location": "La Reina, Santiago",
+    "description": "Amplia casa con jardín formado, piscina y quincho. 4 dormitorios, 3 baños.",
+    "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "status": "available"
+  },
+  {
+    "id": 2,
+    "title": "Departamento Moderno en Las Condes",
+    "price": "UF 8.200",
+    "location": "Las Condes, Santiago",
+    "description": "Departamento estilo mariposa, cercano a metro y parques. 2 dormitorios, 2 baños.",
+    "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "status": "sold"
+  },
+  {
+    "id": 3,
+    "title": "Parcela en Puerto Varas",
+    "price": "UF 5.000",
+    "location": "Puerto Varas, Los Lagos",
+    "description": "Parcela de 5000m2 con vista al volcán. Urbanizada.",
+    "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "status": "available"
+  }
+]

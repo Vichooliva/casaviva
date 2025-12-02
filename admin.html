@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Casa Viva Propiedades</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="admin-btn"><i class="fas fa-home"></i> Volver al Inicio</a>
+        <div class="logo-container">
+            <h1>CASA<span>•</span>VIVA</h1>
+            <div class="subtitle">ADMINISTRACIÓN</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="admin-container">
+            <h2 style="color: var(--primary-gold); margin-bottom: 20px; text-align: center;">Agregar Nueva Propiedad</h2>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #ccc;">
+                Como este sitio no usa base de datos, esta herramienta generará el código que necesitas.
+                Llena el formulario, copia el código generado y pégalo en el archivo <code>data/properties.json</code>.
+            </p>
+
+            <form id="property-form">
+                <div class="form-group">
+                    <label for="title">Título</label>
+                    <input type="text" id="title" required placeholder="Ej: Casa en La Dehesa">
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Precio</label>
+                    <input type="text" id="price" required placeholder="Ej: UF 15.000">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Ubicación</label>
+                    <input type="text" id="location" required placeholder="Ej: Lo Barnechea, Santiago">
+                </div>
+
+                <div class="form-group">
+                    <label for="image">URL de Imagen</label>
+                    <input type="url" id="image" required placeholder="https://ejemplo.com/imagen.jpg">
+                    <small style="color: #666;">Puedes usar imágenes de Unsplash o subir tus fotos a un host de imágenes.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" required placeholder="Descripción detallada de la propiedad..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Estado</label>
+                    <select id="status">
+                        <option value="available">Disponible</option>
+                        <option value="sold">Vendida</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">Generar Código</button>
+            </form>
+
+            <div id="output-container" class="output-area" style="display: none;">
+                <h3 style="color: var(--primary-blue); margin-bottom: 10px;">Código Generado:</h3>
+                <p style="margin-bottom: 10px; font-size: 0.8rem;">Copia esto y agrégalo a la lista en <code>data/properties.json</code> (asegúrate de poner una coma después del elemento anterior si no es el primero).</p>
+                <pre id="json-output"></pre>
+                <button id="copy-btn" class="contact-btn" style="margin-top: 10px; width: auto; display: inline-block;">Copiar al Portapapeles</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
