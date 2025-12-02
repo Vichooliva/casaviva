@@ -1,37 +1,74 @@
 [
   {
     "id": 1,
-    "title": "Hermosa Casa en La Reina",
+    "title": "Refugio Natural en La Reina",
     "price": "UF 12.500",
     "location": "La Reina, Santiago",
-    "description": "Amplia casa con jardín formado, piscina y quincho. 4 dormitorios, 3 baños. Cercana a colegios y supermercados. Barrio tranquilo y seguro.",
+    "description": "Espectacular casa rodeada de naturaleza. Jardín consolidado con árboles nativos, piscina y quincho. 4 dormitorios, 3 baños. Un oasis en la ciudad.",
     "images": [
-      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600596542815-27bfef402399?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     ],
     "status": "available"
   },
   {
     "id": 2,
-    "title": "Departamento Moderno en Las Condes",
+    "title": "Departamento con Vista al Parque",
     "price": "UF 8.200",
     "location": "Las Condes, Santiago",
-    "description": "Departamento estilo mariposa, cercano a metro y parques. 2 dormitorios, 2 baños. Edificio con gimnasio y piscina.",
+    "description": "Moderno departamento con vista despejada a áreas verdes. 2 dormitorios, 2 baños. Edificio sustentable con paneles solares y jardines verticales.",
     "images": [
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     ],
     "status": "sold"
   },
   {
     "id": 3,
-    "title": "Parcela en Puerto Varas",
+    "title": "Parcela Ecológica en Puerto Varas",
     "price": "UF 5.000",
     "location": "Puerto Varas, Los Lagos",
-    "description": "Parcela de 5000m2 con vista al volcán. Urbanizada. Ideal para proyecto familiar o turístico.",
+    "description": "Parcela de 5000m2 con bosque nativo y vista al volcán. Ideal para proyecto de vida sustentable. Acceso a río y senderos de trekking.",
     "images": [
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1449844908441-8829872d2607?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    ],
+    "status": "available"
+  },
+  {
+    "id": 4,
+    "title": "Casona Chilena en Chicureo",
+    "price": "UF 18.900",
+    "location": "Chicureo, Colina",
+    "description": "Elegante casa estilo chileno con amplio parque. 5 dormitorios, 4 baños, sala de estar y escritorio. Piscina temperada y quincho cerrado.",
+    "images": [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    ],
+    "status": "available"
+  },
+  {
+    "id": 5,
+    "title": "Loft Industrial en Barrio Italia",
+    "price": "UF 6.500",
+    "location": "Providencia, Santiago",
+    "description": "Loft de diseño con terraza privada y mucha luz natural. Espacios abiertos, cocina americana y terminaciones de lujo. Cercano a cafés y galerías.",
+    "images": [
+      "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    ],
+    "status": "available"
+  },
+  {
+    "id": 6,
+    "title": "Casa en Condominio Piedra Roja",
+    "price": "UF 14.200",
+    "location": "Chicureo, Colina",
+    "description": "Casa mediterránea en exclusivo condominio con laguna. Seguridad 24/7. 4 dormitorios más servicios. Jardín con riego automático.",
+    "images": [
+      "https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600573472592-401b489a3cdc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
     ],
     "status": "available"
   }
