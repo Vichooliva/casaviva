@@ -36,15 +36,29 @@
 
     <main class="container" id="admin-content" style="display: none;">
         <div class="admin-container">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <h2 style="color: var(--primary-gold);">Gestión de Propiedades</h2>
-                <button id="load-data-btn" class="contact-btn" style="width: auto; padding: 10px 20px;">
-                    <i class="fas fa-sync"></i> Cargar Datos Actuales
-                </button>
+            <div id="github-config" style="margin-bottom: 20px; padding: 15px; background: #222; border: 1px solid var(--primary-green); border-radius: 8px; display: none;">
+                <h3 style="color: var(--primary-gold); margin-bottom: 10px;">Configuración de Actualización Automática</h3>
+                <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 10px;">Para que los cambios se guarden automáticamente, ingresa tu "Llave de Acceso" (GitHub Token).</p>
+                <div class="form-group">
+                    <input type="password" id="github-token" placeholder="Pegar llave aquí (ghp_...)" style="width: 100%;">
+                </div>
+                <button id="save-token-btn" class="btn-submit" style="width: auto; padding: 10px 20px;">Guardar Llave</button>
             </div>
 
-            <div id="properties-list" style="margin-bottom: 40px; max-height: 300px; overflow-y: auto; border: 1px solid #333; padding: 10px;">
-                <p style="text-align: center; color: #666;">Carga los datos para ver y editar las propiedades existentes.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: var(--primary-gold);">Gestión de Propiedades</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button id="config-btn" class="contact-btn" style="width: auto; padding: 10px 20px; background: #333;">
+                        <i class="fas fa-cog"></i> Config
+                    </button>
+                    <button id="load-data-btn" class="contact-btn" style="width: auto; padding: 10px 20px; display: none;">
+                        <i class="fas fa-sync"></i> Recargar
+                    </button>
+                </div>
+            </div>
+
+            <div id="properties-list" style="margin-bottom: 40px; max-height: 400px; overflow-y: auto; border: 1px solid #333; padding: 10px; border-radius: 8px;">
+                <p style="text-align: center; color: #666;">Cargando propiedades...</p>
             </div>
 
             <hr style="border-color: #333; margin: 30px 0;">
@@ -89,21 +103,18 @@
                 </div>
 
                 <div style="display: flex; gap: 10px;">
-                    <button type="submit" class="btn-submit">Guardar en Lista (Memoria)</button>
-                    <button type="button" id="cancel-edit" class="btn-submit" style="background-color: #333; display: none;">Cancelar Edición</button>
+                    <button type="submit" class="btn-submit">Guardar Propiedad</button>
+                    <button type="button" id="cancel-edit" class="btn-submit" style="background-color: #333; display: none;">Cancelar</button>
                 </div>
             </form>
 
-            <div id="output-container" class="output-area" style="display: none;">
-                <h3 style="color: var(--primary-green); margin-bottom: 10px;">¡IMPORTANTE! Paso Final:</h3>
-                <p style="margin-bottom: 10px; font-size: 0.9rem; color: #ccc;">
-                    Como este sitio no tiene base de datos, debes actualizar el archivo manualmente.
-                    <br>1. Copia el código de abajo.
-                    <br>2. Abre el archivo <code>data/properties.json</code> en tu repositorio.
-                    <br>3. Reemplaza TODO el contenido con este nuevo código.
-                </p>
-                <pre id="json-output"></pre>
-                <button id="copy-btn" class="contact-btn" style="margin-top: 10px; width: auto; display: inline-block;">Copiar Todo el Código</button>
+            <div id="status-message" style="margin-top: 20px; padding: 15px; border-radius: 8px; display: none; text-align: center; font-weight: bold;"></div>
+
+            <div style="margin-top: 40px; text-align: center;">
+                <button id="push-changes-btn" class="btn-submit" style="background: linear-gradient(45deg, #D4AF37, #B8860B); font-size: 1.2rem; padding: 20px;">
+                    <i class="fas fa-cloud-upload-alt"></i> PUBLICAR CAMBIOS EN EL SITIO
+                </button>
+                <p style="margin-top: 10px; color: #888; font-size: 0.9rem;">Esto actualizará la página web real. Puede tardar unos minutos.</p>
             </div>
         </div>
     </main>
