@@ -252,6 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('title').value = prop.title;
         document.getElementById('price').value = prop.price;
         document.getElementById('location').value = prop.location;
+        document.getElementById('lat').value = prop.lat || '';
+        document.getElementById('lng').value = prop.lng || '';
         document.getElementById('description').value = prop.description;
         document.getElementById('status').value = prop.status;
         
@@ -302,6 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
             title: document.getElementById('title').value,
             price: document.getElementById('price').value,
             location: document.getElementById('location').value,
+            lat: document.getElementById('lat').value,
+            lng: document.getElementById('lng').value,
             description: document.getElementById('description').value,
             images: finalImages,
             status: document.getElementById('status').value,

@@ -1,4 +1,5 @@
 let allProperties = []; // Store all properties globally for filtering
+let showFavoritesOnly = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('properties-grid');
@@ -10,6 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('filter-btn').addEventListener('click', applyFilters);
         document.getElementById('search-input').addEventListener('keyup', (e) => {
             if (e.key === 'Enter') applyFilters();
+        });
+        
+        // Favorites Toggle
+        const favBtn = document.getElementById('toggle-favorites');
+        favBtn.addEventListener('click', () => {
+            showFavoritesOnly = !showFavoritesOnly;
+            favBtn.style.background = showFavoritesOnly ? '#ff6b6b' : 'transparent';
+            favBtn.style.color = showFavoritesOnly ? 'white' : '#ff6b6b';
+            favBtn.innerHTML = showFavoritesOnly ? '<i class="fas fa-heart"></i> Ver Todos' : '<i class="fas fa-heart"></i> Ver Favoritos';
+            applyFilters();
         });
 
         // Wait for Firebase to initialize
@@ -61,7 +72,14 @@ function applyFilters() {
         // For now, we assume the user filters based on the dominant currency number.
         const matchPrice = priceValue >= minPrice && priceValue <= maxPrice;
 
-        return matchText && matchPrice;
+        // Favorites Filter
+        let matchFav = true;
+        if (showFavoritesOnly) {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            matchFav = favorites.includes(p.id);
+        }
+
+        return matchText && matchPrice && matchFav;
     });
 
     // Sorting
@@ -98,23 +116,30 @@ function renderProperties(properties) {
         return;
     }
 
-    properties.forEach(property => {
-        const card = document.createElement('div');
-        card.className = 'property-card';
-        
-        // Use first image or placeholder
-        const mainImage = (property.images && property.images.length > 0) ? property.images[0] : 'https://via.placeholder.com/800x600?text=Imagen+No+Disponible';
-        
         const isSold = property.status === 'sold';
         const ribbonHtml = isSold ? '<div class="ribbon"></div>' : '';
 
+        // Check if favorite
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const isFav = favorites.includes(property.id);
+
         // Click on card goes to detail page
         card.onclick = (e) => {
-            // Prevent navigation if clicking the contact button directly
-            if (!e.target.closest('.contact-btn')) {
+            // Prevent navigation if clicking the contact button or heart
+            if (!e.target.closest('.contact-btn') && !e.target.closest('.fav-btn')) {
                 window.location.href = `property.html?id=${property.id}`;
             }
         };
+
+        card.innerHTML = `
+            ${ribbonHtml}
+            <button class="fav-btn" onclick="toggleFavorite('${property.id}', this)" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.5); border: none; color: ${isFav ? '#ff6b6b' : 'white'}; font-size: 1.5rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+                <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+            </button>
+            <div class="card-image-container">
+                <img src="${mainImage}" alt="${property.title}" class="card-image" onerror="this.src='https://via.placeholder.com/800x600?text=Imagen+No+Disponible'">
+            </div>
+            <div class="card-content">
 
         card.innerHTML = `
             ${ribbonHtml}
@@ -128,10 +153,34 @@ function renderProperties(properties) {
                 </div>
                 <div class="card-price">${property.price}</div>
                 <p class="card-description">${property.description}</p>
-                <a href="property.html?id=${property.id}" class="contact-btn">
-                    Ver Detalles
-                </a>
-            </div>
+    });
+}
+
+window.toggleFavorite = (id, btn) => {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const index = favorites.indexOf(id);
+    
+    if (index === -1) {
+        favorites.push(id);
+        btn.style.color = '#ff6b6b';
+        btn.querySelector('i').classList.remove('far');
+        btn.querySelector('i').classList.add('fas');
+    } else {
+        favorites.splice(index, 1);
+        btn.style.color = 'white';
+        btn.querySelector('i').classList.remove('fas');
+        btn.querySelector('i').classList.add('far');
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    
+    // If we are in "Show Favorites" mode, refresh the grid
+    if (showFavoritesOnly) {
+        applyFilters();
+    }
+};
+
+// Function to load property details (called from property.html)
         `;
 
         grid.appendChild(card);
@@ -199,6 +248,12 @@ function renderDetail(property, container, whatsappNumber) {
                         <div class="detail-price">${property.price}</div>
                         <p class="detail-description">${property.description}</p>
                         
+                        <!-- Map Container -->
+                        <div id="map-container" style="margin-top: 30px; margin-bottom: 30px;">
+                            <h3 style="color: var(--primary-gold); margin-bottom: 15px;">Ubicación</h3>
+                            <div id="map" style="height: 300px; width: 100%; border-radius: 10px; z-index: 1;"></div>
+                        </div>
+
                         <a href="${whatsappUrl}" target="_blank" class="contact-btn" style="background-color: var(--primary-gold); color: black; border: none;">
                             <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
                         </a>
@@ -209,6 +264,32 @@ function renderDetail(property, container, whatsappNumber) {
                     </div>
                 </div>
             `;
+            
+            // Initialize Map
+            if (typeof L !== 'undefined') {
+                const lat = parseFloat(property.lat) || -33.4489; // Default Santiago
+                const lng = parseFloat(property.lng) || -70.6693;
+                
+                const map = L.map('map').setView([lat, lng], 13);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+                if (property.lat && property.lng) {
+                    L.marker([lat, lng]).addTo(map)
+                        .bindPopup(property.title)
+                        .openPopup();
+                } else {
+                    // If no specific coords, show circle for general area (mock)
+                    L.circle([lat, lng], {
+                        color: '#D4AF37',
+                        fillColor: '#D4AF37',
+                        fillOpacity: 0.2,
+                        radius: 800
+                    }).addTo(map).bindPopup("Ubicación aproximada: " + property.location);
+                }
+            }
 }
 
 function changeMainImage(src, thumbnailElement) {
