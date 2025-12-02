@@ -4,20 +4,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Only run if we are on the index page with the grid
     if (grid) {
-        fetch('data/properties.json')
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(properties => {
-                renderProperties(properties);
-            })
-            .catch(error => {
-                console.error('Error loading properties:', error);
-                grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1/-1;">Hubo un error al cargar las propiedades.</p>';
-            });
+        // Wait for Firebase to initialize
+        const checkDb = setInterval(() => {
+            if (typeof db !== 'undefined') {
+                clearInterval(checkDb);
+                loadPropertiesFromFirebase();
+            }
+        }, 100);
     }
 });
+
+function loadPropertiesFromFirebase() {
+    const grid = document.getElementById('properties-grid');
+    
+    db.collection("properties").get().then((querySnapshot) => {
+        const properties = [];
+        querySnapshot.forEach((doc) => {
+            properties.push({ id: doc.id, ...doc.data() });
+        });
+        renderProperties(properties);
+    }).catch((error) => {
+        console.error("Error getting documents: ", error);
+        grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1/-1;">Hubo un error al cargar las propiedades.</p>';
+    });
+}
 
 function renderProperties(properties) {
     const grid = document.getElementById('properties-grid');
@@ -73,31 +83,41 @@ function loadPropertyDetail(id) {
     const container = document.getElementById('property-detail-content');
     const WHATSAPP_NUMBER = '56998468181';
 
-    fetch('data/properties.json')
-        .then(res => res.json())
-        .then(properties => {
-            // Find property by ID (convert to string for comparison just in case)
-            const property = properties.find(p => p.id == id);
-
-            if (!property) {
-                container.innerHTML = '<p>Propiedad no encontrada.</p>';
-                return;
-            }
-
-            const mainImage = (property.images && property.images.length > 0) ? property.images[0] : 'https://via.placeholder.com/800x600?text=Imagen+No+Disponible';
+    // Wait for Firebase
+    const checkDb = setInterval(() => {
+        if (typeof db !== 'undefined') {
+            clearInterval(checkDb);
             
-            // Generate thumbnails HTML
-            let thumbnailsHtml = '';
-            if (property.images && property.images.length > 1) {
-                thumbnailsHtml = '<div class="gallery-thumbnails">';
-                property.images.forEach((img, index) => {
-                    thumbnailsHtml += `<img src="${img}" class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage(this.src, this)">`;
-                });
-                thumbnailsHtml += '</div>';
-            }
+            db.collection("properties").doc(id).get().then((doc) => {
+                if (doc.exists) {
+                    const property = { id: doc.id, ...doc.data() };
+                    renderDetail(property, container, WHATSAPP_NUMBER);
+                } else {
+                    container.innerHTML = '<p>Propiedad no encontrada.</p>';
+                }
+            }).catch((error) => {
+                console.error("Error getting document:", error);
+                container.innerHTML = '<p>Error al cargar la propiedad.</p>';
+            });
+        }
+    }, 100);
+}
 
-            const message = `Hola, estoy interesado en la propiedad: ${property.title} (${property.location})`;
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+function renderDetail(property, container, whatsappNumber) {
+    const mainImage = (property.images && property.images.length > 0) ? property.images[0] : 'https://via.placeholder.com/800x600?text=Imagen+No+Disponible';
+    
+    // Generate thumbnails HTML
+    let thumbnailsHtml = '';
+    if (property.images && property.images.length > 1) {
+        thumbnailsHtml = '<div class="gallery-thumbnails">';
+        property.images.forEach((img, index) => {
+            thumbnailsHtml += `<img src="${img}" class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage(this.src, this)">`;
+        });
+        thumbnailsHtml += '</div>';
+    }
+
+    const message = `Hola, estoy interesado en la propiedad: ${property.title} (${property.location})`;
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
             const isSold = property.status === 'sold';
 
             container.innerHTML = `
@@ -125,11 +145,6 @@ function loadPropertyDetail(id) {
                     </div>
                 </div>
             `;
-        })
-        .catch(err => {
-            console.error(err);
-            container.innerHTML = '<p>Error al cargar el detalle.</p>';
-        });
 }
 
 function changeMainImage(src, thumbnailElement) {
