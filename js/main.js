@@ -116,6 +116,13 @@ function renderProperties(properties) {
         return;
     }
 
+    properties.forEach(property => {
+        const card = document.createElement('div');
+        card.className = 'property-card';
+        
+        // Use first image or placeholder
+        const mainImage = (property.images && property.images.length > 0) ? property.images[0] : 'https://via.placeholder.com/800x600?text=Imagen+No+Disponible';
+        
         const isSold = property.status === 'sold';
         const ribbonHtml = isSold ? '<div class="ribbon"></div>' : '';
 
@@ -140,19 +147,19 @@ function renderProperties(properties) {
                 <img src="${mainImage}" alt="${property.title}" class="card-image" onerror="this.src='https://via.placeholder.com/800x600?text=Imagen+No+Disponible'">
             </div>
             <div class="card-content">
-
-        card.innerHTML = `
-            ${ribbonHtml}
-            <div class="card-image-container">
-                <img src="${mainImage}" alt="${property.title}" class="card-image" onerror="this.src='https://via.placeholder.com/800x600?text=Imagen+No+Disponible'">
-            </div>
-            <div class="card-content">
                 <h3 class="card-title">${property.title}</h3>
                 <div class="card-location">
                     <i class="fas fa-map-marker-alt"></i> ${property.location}
                 </div>
                 <div class="card-price">${property.price}</div>
                 <p class="card-description">${property.description}</p>
+                <a href="property.html?id=${property.id}" class="contact-btn">
+                    Ver Detalles
+                </a>
+            </div>
+        `;
+
+        grid.appendChild(card);
     });
 }
 
