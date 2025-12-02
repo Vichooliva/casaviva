@@ -188,34 +188,28 @@ document.addEventListener('DOMContentLoaded', () => {
     propertyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // 1. Handle File Uploads
+        // 1. Handle File Uploads (Compressed Base64)
         const fileInput = document.getElementById('image-upload');
         const files = fileInput.files;
         let uploadedUrls = [];
 
         if (files.length > 0) {
-            showStatus('Subiendo imágenes... por favor espera.', 'info');
+            showStatus('Procesando imágenes... por favor espera.', 'info');
             const submitBtn = propertyForm.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
 
             try {
                 for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    // Create a unique name: timestamp_filename
-                    const storageRef = firebase.storage().ref();
-                    const fileRef = storageRef.child('properties/' + Date.now() + '_' + file.name);
-                    
-                    await fileRef.put(file);
-                    const url = await fileRef.getDownloadURL();
-                    uploadedUrls.push(url);
+                    const base64 = await compressImage(files[i]);
+                    uploadedUrls.push(base64);
                 }
             } catch (error) {
-                console.error("Error uploading images: ", error);
-                showStatus('Error al subir imágenes: ' + error.message, 'error');
+                console.error("Error processing images: ", error);
+                showStatus('Error al procesar imágenes: ' + error.message, 'error');
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Guardar Propiedad';
-                return; // Stop saving if upload fails
+                return;
             }
             
             submitBtn.disabled = false;
@@ -227,6 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const textUrls = imagesText.split('\n').map(url => url.trim()).filter(url => url.length > 0);
         
         const finalImages = [...textUrls, ...uploadedUrls];
+
+        // Check for size limit (approx 1MB for Firestore doc)
+        const totalSize = JSON.stringify(finalImages).length;
+        if (totalSize > 900000) { // 900KB safety limit
+            showStatus('Error: Las imágenes son demasiadas o muy grandes para la base de datos gratuita. Intenta subir menos fotos.', 'error');
+            return;
+        }
 
         const propertyData = {
             title: document.getElementById('title').value,
@@ -261,6 +262,34 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // Helper function to compress images
+    function compressImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    // Compress to JPEG 0.6 quality
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                    resolve(dataUrl);
+                };
+                img.onerror = (err) => reject(err);
+            };
+            reader.onerror = (err) => reject(err);
+        });
+    }
 
     function resetForm() {
         propertyForm.reset();
