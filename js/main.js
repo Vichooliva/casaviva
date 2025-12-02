@@ -188,13 +188,6 @@ window.toggleFavorite = (id, btn) => {
 };
 
 // Function to load property details (called from property.html)
-        `;
-
-        grid.appendChild(card);
-    });
-}
-
-// Function to load property details (called from property.html)
 function loadPropertyDetail(id) {
     const container = document.getElementById('property-detail-content');
     const WHATSAPP_NUMBER = '56998468181';
