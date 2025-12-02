@@ -4,8 +4,12 @@
     "title": "Hermosa Casa en La Reina",
     "price": "UF 12.500",
     "location": "La Reina, Santiago",
-    "description": "Amplia casa con jardín formado, piscina y quincho. 4 dormitorios, 3 baños.",
-    "image": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "description": "Amplia casa con jardín formado, piscina y quincho. 4 dormitorios, 3 baños. Cercana a colegios y supermercados. Barrio tranquilo y seguro.",
+    "images": [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
     "status": "available"
   },
   {
@@ -13,8 +17,11 @@
     "title": "Departamento Moderno en Las Condes",
     "price": "UF 8.200",
     "location": "Las Condes, Santiago",
-    "description": "Departamento estilo mariposa, cercano a metro y parques. 2 dormitorios, 2 baños.",
-    "image": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "description": "Departamento estilo mariposa, cercano a metro y parques. 2 dormitorios, 2 baños. Edificio con gimnasio y piscina.",
+    "images": [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
     "status": "sold"
   },
   {
@@ -22,8 +29,10 @@
     "title": "Parcela en Puerto Varas",
     "price": "UF 5.000",
     "location": "Puerto Varas, Los Lagos",
-    "description": "Parcela de 5000m2 con vista al volcán. Urbanizada.",
-    "image": "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "description": "Parcela de 5000m2 con vista al volcán. Urbanizada. Ideal para proyecto familiar o turístico.",
+    "images": [
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+    ],
     "status": "available"
   }
 ]

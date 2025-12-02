@@ -3,50 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casa Viva Propiedades</title>
+    <title>Detalle Propiedad - Casa Viva</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <nav>
         <div class="nav-container">
             <div class="nav-links">
-                <a href="index.html" class="active">Inicio</a>
+                <a href="index.html">Inicio</a>
                 <a href="nosotros.html">Nosotros</a>
             </div>
-            <!-- Admin link hidden or subtle -->
         </div>
     </nav>
 
-    <header>
-        <div class="logo-container">
-            <!-- Placeholder for logo image -->
-            <img src="assets/logo.png" alt="Casa Viva Logo" class="logo-img" onerror="this.style.display='none'">
-            <h1>CASA<span>•</span>VIVA</h1>
-            <div class="subtitle">PROPIEDADES</div>
-        </div>
-    </header>
-
-    <main class="container">
-        <h2 class="section-title">Propiedades Destacadas</h2>
-        <div id="properties-grid" class="properties-grid">
-            <!-- Properties will be loaded here by JS -->
-            <div style="text-align: center; width: 100%; grid-column: 1/-1; color: var(--text-muted);">
-                <i class="fas fa-spinner fa-spin"></i> Cargando propiedades...
+    <main class="container" style="padding-top: 40px;">
+        <div id="property-detail-content">
+            <div style="text-align: center; color: var(--text-muted);">
+                <i class="fas fa-spinner fa-spin"></i> Cargando detalle...
             </div>
         </div>
     </main>
 
     <footer style="text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.8rem; border-top: 1px solid #333; margin-top: 40px; background-color: #000;">
         <p>&copy; 2025 Casa Viva Propiedades. Todos los derechos reservados.</p>
-        <br>
-        <a href="admin.html" class="admin-link-footer"><i class="fas fa-lock"></i> Acceso Admin</a>
     </footer>
 
     <script src="js/main.js"></script>
+    <script>
+        // Specific script to load property details
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const propertyId = urlParams.get('id');
+            
+            if(propertyId) {
+                loadPropertyDetail(propertyId);
+            } else {
+                document.getElementById('property-detail-content').innerHTML = '<p>Propiedad no especificada.</p>';
+            }
+        });
+    </script>
 </body>
 </html>

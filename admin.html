@@ -9,23 +9,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal" style="display: block;">
+        <div class="modal-content">
+            <h2 style="color: var(--primary-gold); margin-bottom: 20px;">Acceso Administrativo</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Usuario" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit" class="btn-submit">Ingresar</button>
+                <p id="login-error" style="color: red; margin-top: 10px; display: none;">Credenciales incorrectas</p>
+            </form>
+        </div>
+    </div>
+
     <header>
-        <a href="index.html" class="admin-btn"><i class="fas fa-home"></i> Volver al Inicio</a>
+        <a href="index.html" class="admin-btn" style="position: absolute; top: 20px; left: 20px; color: white; text-decoration: none;"><i class="fas fa-home"></i> Volver al Inicio</a>
         <div class="logo-container">
             <h1>CASA<span>•</span>VIVA</h1>
             <div class="subtitle">ADMINISTRACIÓN</div>
         </div>
     </header>
 
-    <main class="container">
+    <main class="container" id="admin-content" style="display: none;">
         <div class="admin-container">
-            <h2 style="color: var(--primary-gold); margin-bottom: 20px; text-align: center;">Agregar Nueva Propiedad</h2>
-            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #ccc;">
-                Como este sitio no usa base de datos, esta herramienta generará el código que necesitas.
-                Llena el formulario, copia el código generado y pégalo en el archivo <code>data/properties.json</code>.
-            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <h2 style="color: var(--primary-gold);">Gestión de Propiedades</h2>
+                <button id="load-data-btn" class="contact-btn" style="width: auto; padding: 10px 20px;">
+                    <i class="fas fa-sync"></i> Cargar Datos Actuales
+                </button>
+            </div>
 
+            <div id="properties-list" style="margin-bottom: 40px; max-height: 300px; overflow-y: auto; border: 1px solid #333; padding: 10px;">
+                <p style="text-align: center; color: #666;">Carga los datos para ver y editar las propiedades existentes.</p>
+            </div>
+
+            <hr style="border-color: #333; margin: 30px 0;">
+
+            <h3 id="form-title" style="color: var(--text-light); margin-bottom: 20px;">Agregar / Editar Propiedad</h3>
+            
             <form id="property-form">
+                <input type="hidden" id="edit-id">
+                
                 <div class="form-group">
                     <label for="title">Título</label>
                     <input type="text" id="title" required placeholder="Ej: Casa en La Dehesa">
@@ -42,9 +70,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="image">URL de Imagen</label>
-                    <input type="url" id="image" required placeholder="https://ejemplo.com/imagen.jpg">
-                    <small style="color: #666;">Puedes usar imágenes de Unsplash o subir tus fotos a un host de imágenes.</small>
+                    <label>Imágenes (URLs)</label>
+                    <small style="color: #888; display: block; margin-bottom: 5px;">Ingresa una URL por línea. Usa servicios como Imgur para subir tus fotos.</small>
+                    <textarea id="images-input" placeholder="https://ejemplo.com/foto1.jpg&#10;https://ejemplo.com/foto2.jpg" style="height: 100px;"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -60,14 +88,22 @@
                     </select>
                 </div>
 
-                <button type="submit" class="btn-submit">Generar Código</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-submit">Guardar en Lista (Memoria)</button>
+                    <button type="button" id="cancel-edit" class="btn-submit" style="background-color: #333; display: none;">Cancelar Edición</button>
+                </div>
             </form>
 
             <div id="output-container" class="output-area" style="display: none;">
-                <h3 style="color: var(--primary-blue); margin-bottom: 10px;">Código Generado:</h3>
-                <p style="margin-bottom: 10px; font-size: 0.8rem;">Copia esto y agrégalo a la lista en <code>data/properties.json</code> (asegúrate de poner una coma después del elemento anterior si no es el primero).</p>
+                <h3 style="color: var(--primary-blue); margin-bottom: 10px;">¡IMPORTANTE! Paso Final:</h3>
+                <p style="margin-bottom: 10px; font-size: 0.9rem; color: #ccc;">
+                    Como este sitio no tiene base de datos, debes actualizar el archivo manualmente.
+                    <br>1. Copia el código de abajo.
+                    <br>2. Abre el archivo <code>data/properties.json</code> en tu repositorio.
+                    <br>3. Reemplaza TODO el contenido con este nuevo código.
+                </p>
                 <pre id="json-output"></pre>
-                <button id="copy-btn" class="contact-btn" style="margin-top: 10px; width: auto; display: inline-block;">Copiar al Portapapeles</button>
+                <button id="copy-btn" class="contact-btn" style="margin-top: 10px; width: auto; display: inline-block;">Copiar Todo el Código</button>
             </div>
         </div>
     </main>

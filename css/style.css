@@ -1,10 +1,11 @@
 :root {
-    --primary-gold: #C5A059;
-    --primary-blue: #2D8CFF;
-    --dark-bg: #1a1a1a;
-    --card-bg: #252525;
-    --text-light: #f0f0f0;
-    --text-muted: #aaaaaa;
+    --primary-gold: #D4AF37; /* More metallic gold */
+    --primary-blue: #003366; /* Darker, more elegant blue */
+    --dark-bg: #121212;
+    --card-bg: #1E1E1E;
+    --text-light: #f5f5f5;
+    --text-muted: #b0b0b0;
+    --accent-gold: #F4C430;
 }
 
 * {
@@ -20,19 +21,70 @@ body {
     line-height: 1.6;
 }
 
+/* Navigation */
+nav {
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 15px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid var(--primary-gold);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--primary-gold);
+}
+
 header {
     background-color: #000;
-    padding: 20px;
+    padding: 40px 20px;
     text-align: center;
     border-bottom: 2px solid var(--primary-gold);
     position: relative;
+    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1600596542815-27bfef402399?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img {
+    max-width: 150px;
+    margin-bottom: 15px;
 }
 
 .logo-container h1 {
     font-family: 'Playfair Display', serif;
     color: var(--text-light);
-    font-size: 2.5rem;
-    letter-spacing: 2px;
+    font-size: 3rem;
+    letter-spacing: 3px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .logo-container span {
@@ -40,112 +92,135 @@ header {
 }
 
 .subtitle {
-    color: var(--primary-blue);
-    font-size: 1rem;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-top: 5px;
-}
-
-/* Admin Button */
-.admin-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    opacity: 0.5;
-    transition: opacity 0.3s;
-}
-
-.admin-btn:hover {
-    opacity: 1;
     color: var(--primary-gold);
+    font-size: 1.2rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+/* Admin Button - Hidden in header, moved to footer or specific login page */
+.admin-link-footer {
+    color: #333;
+    text-decoration: none;
+    font-size: 0.8rem;
 }
 
 /* Main Content */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 60px 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    color: var(--primary-gold);
 }
 
 .properties-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 40px;
 }
 
 /* Property Card */
 .property-card {
     background-color: var(--card-bg);
-    border-radius: 10px;
+    border-radius: 0; /* Sharper edges for luxury feel */
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
     position: relative;
     cursor: pointer;
+    border: 1px solid #333;
 }
 
 .property-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(197, 160, 89, 0.2);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);
+    border-color: var(--primary-gold);
+}
+
+.card-image-container {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
 }
 
 .card-image {
     width: 100%;
-    height: 200px;
+    height: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.property-card:hover .card-image {
+    transform: scale(1.1);
 }
 
 .card-content {
-    padding: 20px;
+    padding: 25px;
 }
 
 .card-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     margin-bottom: 10px;
-    color: var(--primary-gold);
+    color: var(--text-light);
 }
 
 .card-location {
-    color: var(--primary-blue);
+    color: var(--primary-gold);
     font-size: 0.9rem;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .card-price {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 15px;
+    color: var(--text-light);
 }
 
 .card-description {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--text-muted);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .contact-btn {
     display: block;
     width: 100%;
-    padding: 10px;
-    background-color: var(--primary-gold);
-    color: #000;
+    padding: 12px;
+    background-color: transparent;
+    color: var(--primary-gold);
     text-align: center;
     text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    font-weight: 600;
+    border: 1px solid var(--primary-gold);
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
 }
 
 .contact-btn:hover {
-    background-color: #e0b86a;
+    background-color: var(--primary-gold);
+    color: #000;
 }
 
 /* Sold Ribbon */
@@ -167,22 +242,128 @@ header {
     right: -35px;
     transform: rotate(45deg);
     width: 150px;
-    background-color: #cc0000;
+    background-color: #800000; /* Darker red */
     color: white;
     text-align: center;
     padding: 10px 0;
     font-weight: bold;
     box-shadow: 0 5px 10px rgba(0,0,0,0.5);
     letter-spacing: 2px;
+    font-size: 0.9rem;
+}
+
+/* Property Details Page */
+.property-detail-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+}
+
+.gallery-main {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+}
+
+.gallery-thumbnails {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.thumbnail {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+    border: 1px solid transparent;
+}
+
+.thumbnail:hover, .thumbnail.active {
+    opacity: 1;
+    border-color: var(--primary-gold);
+}
+
+.detail-info h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--primary-gold);
+    margin-bottom: 10px;
+}
+
+.detail-price {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.detail-description {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    white-space: pre-line;
+}
+
+/* About Page */
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-content p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+/* Admin Login Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    margin: 15% auto;
+    padding: 40px;
+    border: 1px solid var(--primary-gold);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: var(--primary-gold);
 }
 
 /* Admin Page Styles */
 .admin-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 40px auto;
-    padding: 20px;
+    padding: 30px;
     background-color: var(--card-bg);
-    border-radius: 10px;
+    border-radius: 5px;
+    border: 1px solid #333;
 }
 
 .form-group {
@@ -191,43 +372,54 @@ header {
 
 .form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     color: var(--primary-gold);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .form-group input, .form-group textarea, .form-group select {
     width: 100%;
-    padding: 10px;
-    background-color: #333;
-    border: 1px solid #444;
+    padding: 12px;
+    background-color: #121212;
+    border: 1px solid #333;
     color: white;
-    border-radius: 5px;
+    border-radius: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-gold);
 }
 
 .form-group textarea {
-    height: 100px;
+    height: 150px;
 }
 
 .btn-submit {
-    background-color: var(--primary-blue);
-    color: white;
+    background-color: var(--primary-gold);
+    color: #000;
     border: none;
-    padding: 12px 24px;
-    border-radius: 5px;
+    padding: 15px 30px;
     cursor: pointer;
     font-size: 1rem;
     width: 100%;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s;
 }
 
 .btn-submit:hover {
-    background-color: #1a75e0;
+    background-color: #b59025;
 }
 
 .output-area {
     margin-top: 30px;
-    background-color: #111;
-    padding: 15px;
-    border-radius: 5px;
+    background-color: #000;
+    padding: 20px;
     border: 1px solid var(--primary-gold);
 }
 
@@ -236,6 +428,7 @@ header {
     word-wrap: break-word;
     color: #0f0;
     font-family: monospace;
+    font-size: 0.9rem;
 }
 
 /* Responsive */
@@ -246,5 +439,14 @@ header {
     
     .logo-container h1 {
         font-size: 2rem;
+    }
+    
+    .property-detail-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav-container {
+        flex-direction: column;
+        gap: 15px;
     }
 }
