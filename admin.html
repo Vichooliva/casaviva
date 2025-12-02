@@ -29,7 +29,7 @@
     <header>
         <a href="index.html" class="admin-btn" style="position: absolute; top: 20px; left: 20px; color: white; text-decoration: none;"><i class="fas fa-home"></i> Volver al Inicio</a>
         <div class="logo-container">
-            <h1>CASA<span>•</span>VIVA</h1>
+            <img src="img/logo.png" alt="Casa Viva Propiedades" style="max-height: 100px;">
             <div class="subtitle">ADMINISTRACIÓN</div>
         </div>
     </header>
@@ -70,9 +70,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Imágenes (URLs)</label>
-                    <small style="color: #888; display: block; margin-bottom: 5px;">Ingresa una URL por línea. Usa servicios como Imgur para subir tus fotos.</small>
-                    <textarea id="images-input" placeholder="https://ejemplo.com/foto1.jpg&#10;https://ejemplo.com/foto2.jpg" style="height: 100px;"></textarea>
+                    <label>Imágenes</label>
+                    <small style="color: #888; display: block; margin-bottom: 5px;">Sube imágenes desde tu computador o pega URLs.</small>
+                    
+                    <input type="file" id="image-upload" multiple accept="image/*" style="margin-bottom: 10px; color: white;">
+                    
+                    <textarea id="images-input" placeholder="O pega URLs aquí (una por línea)..." style="height: 100px;"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -102,6 +105,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="js/firebase-init.js"></script>
     <script src="js/admin.js"></script>
 </body>

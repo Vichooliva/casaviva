@@ -185,18 +185,55 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelEditBtn.style.display = 'none';
     });
 
-    propertyForm.addEventListener('submit', (e) => {
+    propertyForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        // 1. Handle File Uploads
+        const fileInput = document.getElementById('image-upload');
+        const files = fileInput.files;
+        let uploadedUrls = [];
+
+        if (files.length > 0) {
+            showStatus('Subiendo imágenes... por favor espera.', 'info');
+            const submitBtn = propertyForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+
+            try {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    // Create a unique name: timestamp_filename
+                    const storageRef = firebase.storage().ref();
+                    const fileRef = storageRef.child('properties/' + Date.now() + '_' + file.name);
+                    
+                    await fileRef.put(file);
+                    const url = await fileRef.getDownloadURL();
+                    uploadedUrls.push(url);
+                }
+            } catch (error) {
+                console.error("Error uploading images: ", error);
+                showStatus('Error al subir imágenes: ' + error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Guardar Propiedad';
+                return; // Stop saving if upload fails
+            }
+            
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Guardar Propiedad';
+        }
+
+        // 2. Combine with existing text URLs
         const imagesText = document.getElementById('images-input').value;
-        const images = imagesText.split('\n').map(url => url.trim()).filter(url => url.length > 0);
+        const textUrls = imagesText.split('\n').map(url => url.trim()).filter(url => url.length > 0);
+        
+        const finalImages = [...textUrls, ...uploadedUrls];
 
         const propertyData = {
             title: document.getElementById('title').value,
             price: document.getElementById('price').value,
             location: document.getElementById('location').value,
             description: document.getElementById('description').value,
-            images: images,
+            images: finalImages,
             status: document.getElementById('status').value,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -230,88 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editIdInput.value = '';
         document.getElementById('form-title').textContent = 'Agregar / Editar Propiedad';
         cancelEditBtn.style.display = 'none';
+        document.getElementById('image-upload').value = ''; // Clear file input
     }
-});            statusMessage.style.backgroundColor = 'rgba(46, 125, 50, 0.2)';
-            statusMessage.style.color = '#4CAF50';
-            statusMessage.style.border = '1px solid #4CAF50';
-        } else {
-            statusMessage.style.backgroundColor = 'rgba(198, 40, 40, 0.2)';
-            statusMessage.style.color = '#ff6b6b';
-            statusMessage.style.border = '1px solid #ff6b6b';
-        }
-        setTimeout(() => {
-            statusMessage.style.display = 'none';
-        }, 5000);
-    }
-
-    // --- Form Handling ---
-    window.editProperty = (id) => {
-        const prop = properties.find(p => p.id === id);
-        if (!prop) return;
-
-        document.getElementById('title').value = prop.title;
-        document.getElementById('price').value = prop.price;
-        document.getElementById('location').value = prop.location;
-        document.getElementById('description').value = prop.description;
-        document.getElementById('status').value = prop.status;
-        
-        const images = prop.images || (prop.image ? [prop.image] : []);
-        document.getElementById('images-input').value = images.join('\n');
-
-        editIdInput.value = prop.id;
-        document.getElementById('form-title').textContent = 'Editando: ' + prop.title;
-        cancelEditBtn.style.display = 'inline-block';
-        
-        propertyForm.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    window.deleteProperty = (id) => {
-        if (confirm('¿Estás seguro de borrar esta propiedad?')) {
-            properties = properties.filter(p => p.id !== id);
-            renderPropertiesList();
-            showStatus('Propiedad eliminada de la lista. Recuerda PUBLICAR CAMBIOS.', 'success');
-        }
-    };
-
-    cancelEditBtn.addEventListener('click', () => {
-        propertyForm.reset();
-        editIdInput.value = '';
-        document.getElementById('form-title').textContent = 'Agregar / Editar Propiedad';
-        cancelEditBtn.style.display = 'none';
-    });
-
-    propertyForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const id = editIdInput.value ? parseInt(editIdInput.value) : Date.now();
-        const imagesText = document.getElementById('images-input').value;
-        const images = imagesText.split('\n').map(url => url.trim()).filter(url => url.length > 0);
-
-        const newProp = {
-            id: id,
-            title: document.getElementById('title').value,
-            price: document.getElementById('price').value,
-            location: document.getElementById('location').value,
-            description: document.getElementById('description').value,
-            images: images,
-            status: document.getElementById('status').value
-        };
-
-        if (editIdInput.value) {
-            const index = properties.findIndex(p => p.id === id);
-            if (index !== -1) properties[index] = newProp;
-        } else {
-            properties.push(newProp);
-        }
-
-        propertyForm.reset();
-        editIdInput.value = '';
-        document.getElementById('form-title').textContent = 'Agregar / Editar Propiedad';
-        cancelEditBtn.style.display = 'none';
-
-        renderPropertiesList();
-        showStatus('Propiedad guardada en lista. Recuerda PUBLICAR CAMBIOS.', 'success');
-    });
-
-    pushChangesBtn.addEventListener('click', saveToGitHub);
 });
