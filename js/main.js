@@ -185,19 +185,19 @@ function renderProperties(properties) {
 
         card.innerHTML = `
             ${ribbonHtml}
+            <button class="fav-btn" onclick="toggleFavorite('${property.id}', this)" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.5); border: none; color: ${isFav ? '#ff6b6b' : 'white'}; font-size: 1.5rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+                <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+            </button>
             <div class="card-image-container">
                 ${operationTag}
                 <img src="${mainImage}" alt="${property.title}" class="card-image" onerror="this.src='https://via.placeholder.com/800x600?text=Imagen+No+Disponible'">
-            </div>on>
-            <div class="card-image-container">
-                <img src="${mainImage}" alt="${property.title}" class="card-image" onerror="this.src='https://via.placeholder.com/800x600?text=Imagen+No+Disponible'">
             </div>
             <div class="card-content">
-                <div class="card-price">${formatPriceWithCLP(property.price, property.currency)}</div>
+                <h3 class="card-title">${property.title}</h3>
                 <div class="card-location">
                     <i class="fas fa-map-marker-alt"></i> ${property.location}
                 </div>
-                <div class="card-price">${formatPriceWithCLP(property.price)}</div>
+                <div class="card-price">${formatPriceWithCLP(property.price, property.currency)}</div>
                 <p class="card-description">${property.description}</p>
                 <a href="property.html?id=${property.id}" class="contact-btn">
                     Ver Detalles
