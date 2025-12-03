@@ -290,8 +290,8 @@ function renderDetail(property, container, whatsappNumber) {
                         <div class="card-location" style="font-size: 1.1rem; margin-bottom: 20px;">
                             <i class="fas fa-map-marker-alt"></i> ${property.location}
                         </div>
-                        <div class="detail-price">${formatPriceWithCLP(property.price, property.currency)}</div>0px; display: inline-block; margin-bottom: 20px; font-weight: bold;">VENDIDA</div>' : ''}
-                        <div class="detail-price">${formatPriceWithCLP(property.price)}</div>
+                        ${isSold ? '<div style="background: #800000; color: white; padding: 10px; display: inline-block; margin-bottom: 20px; font-weight: bold;">VENDIDA</div>' : ''}
+                        <div class="detail-price">${formatPriceWithCLP(property.price, property.currency)}</div>
                         <p class="detail-description">${property.description}</p>
                         
                         <!-- Map Container -->
