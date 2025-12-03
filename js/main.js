@@ -107,6 +107,22 @@ function applyFilters() {
     renderProperties(filtered);
 }
 
+function formatPriceWithCLP(price) {
+    if (!price) return '';
+    // Check if price is in UF
+    if (price.toLowerCase().includes('uf')) {
+        // Extract number
+        const ufValue = parseFloat(price.replace(/\./g, '').replace(/,/g, '.').match(/[\d\.]+/));
+        if (!isNaN(ufValue)) {
+            const clpValue = Math.round(ufValue * 39500);
+            // Format CLP with dots
+            const clpFormatted = clpValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return `${price} <span style="color: #888; font-size: 0.8em; display: block;">(approx. $${clpFormatted})</span>`;
+        }
+    }
+    return price;
+}
+
 function renderProperties(properties) {
     const grid = document.getElementById('properties-grid');
     grid.innerHTML = '';
@@ -151,7 +167,7 @@ function renderProperties(properties) {
                 <div class="card-location">
                     <i class="fas fa-map-marker-alt"></i> ${property.location}
                 </div>
-                <div class="card-price">${property.price}</div>
+                <div class="card-price">${formatPriceWithCLP(property.price)}</div>
                 <p class="card-description">${property.description}</p>
                 <a href="property.html?id=${property.id}" class="contact-btn">
                     Ver Detalles
@@ -245,7 +261,7 @@ function renderDetail(property, container, whatsappNumber) {
                             <i class="fas fa-map-marker-alt"></i> ${property.location}
                         </div>
                         ${isSold ? '<div style="background: #800000; color: white; padding: 10px; display: inline-block; margin-bottom: 20px; font-weight: bold;">VENDIDA</div>' : ''}
-                        <div class="detail-price">${property.price}</div>
+                        <div class="detail-price">${formatPriceWithCLP(property.price)}</div>
                         <p class="detail-description">${property.description}</p>
                         
                         <!-- Map Container -->

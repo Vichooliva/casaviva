@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=1.1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 </head>
 <body>
     <!-- Login Modal -->
@@ -70,17 +74,26 @@
                     <input type="text" id="location" required placeholder="Ej: Lo Barnechea, Santiago">
                 </div>
 
+                <div class="form-group">
+                    <label>Mapa de Ubicación</label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="map-search-input" placeholder="Buscar dirección en el mapa..." style="flex: 1;">
+                        <button type="button" id="map-search-btn" class="contact-btn" style="width: auto; margin: 0; padding: 0 15px;">Buscar</button>
+                    </div>
+                    <div id="admin-map" style="height: 300px; width: 100%; border-radius: 5px; border: 1px solid #444; margin-bottom: 10px;"></div>
+                    <small style="color: #aaa;">Busca una dirección o arrastra el marcador para ajustar la posición.</small>
+                </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                     <div class="form-group">
-                        <label for="lat">Latitud (Opcional)</label>
-                        <input type="text" id="lat" placeholder="Ej: -33.4489">
+                        <label for="lat">Latitud</label>
+                        <input type="text" id="lat" placeholder="Ej: -33.4489" readonly style="background: #222; color: #888;">
                     </div>
                     <div class="form-group">
-                        <label for="lng">Longitud (Opcional)</label>
-                        <input type="text" id="lng" placeholder="Ej: -70.6693">
+                        <label for="lng">Longitud</label>
+                        <input type="text" id="lng" placeholder="Ej: -70.6693" readonly style="background: #222; color: #888;">
                     </div>
                 </div>
-                <small style="color: #666; display: block; margin-top: -10px; margin-bottom: 15px;">Puedes obtener estas coordenadas de Google Maps (clic derecho en el mapa > ¿Qué hay aquí?).</small>
 
                 <div class="form-group">
                     <label>Imágenes</label>
@@ -132,6 +145,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <!-- Storage removed to avoid billing requirement -->
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="js/firebase-init.js"></script>
     <script src="js/admin.js"></script>
 </body>

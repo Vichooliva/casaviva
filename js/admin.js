@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State ---
     let properties = [];
     let currentImages = []; // Array to hold image URLs/Base64 for the current form
+    let map, marker; // Leaflet map and marker
 
     // --- Login Logic ---
     loginForm.addEventListener('submit', (e) => {
@@ -34,12 +35,78 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof db !== 'undefined') {
                     clearInterval(checkDb);
                     setupRealtimeListener();
+                    initMap(); // Initialize map after login
                 }
             }, 100);
         } else {
             loginError.style.display = 'block';
         }
     });
+
+    // --- Map Logic ---
+    function initMap() {
+        // Default to Santiago
+        const defaultLat = -33.4489;
+        const defaultLng = -70.6693;
+
+        map = L.map('admin-map').setView([defaultLat, defaultLng], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+
+        // Update inputs on drag
+        marker.on('dragend', function(e) {
+            const position = marker.getLatLng();
+            updateLatLngInputs(position.lat, position.lng);
+        });
+
+        // Update marker on map click
+        map.on('click', function(e) {
+            marker.setLatLng(e.latlng);
+            updateLatLngInputs(e.latlng.lat, e.latlng.lng);
+        });
+
+        // Search functionality
+        document.getElementById('map-search-btn').addEventListener('click', searchLocation);
+        document.getElementById('map-search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchLocation();
+            }
+        });
+    }
+
+    function updateLatLngInputs(lat, lng) {
+        document.getElementById('lat').value = lat.toFixed(6);
+        document.getElementById('lng').value = lng.toFixed(6);
+    }
+
+    function searchLocation() {
+        const query = document.getElementById('map-search-input').value;
+        if (!query) return;
+
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    const lat = parseFloat(data[0].lat);
+                    const lon = parseFloat(data[0].lon);
+                    
+                    map.setView([lat, lon], 15);
+                    marker.setLatLng([lat, lon]);
+                    updateLatLngInputs(lat, lon);
+                } else {
+                    alert('Ubicación no encontrada');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Error al buscar ubicación');
+            });
+    }
 
     // --- Toggle URL Input ---
     toggleUrlInputBtn.addEventListener('click', () => {
@@ -265,6 +332,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('form-title').textContent = 'Editando: ' + prop.title;
         cancelEditBtn.style.display = 'inline-block';
         
+        // Update map position
+        if (prop.lat && prop.lng && map && marker) {
+            const lat = parseFloat(prop.lat);
+            const lng = parseFloat(prop.lng);
+            map.setView([lat, lng], 15);
+            marker.setLatLng([lat, lng]);
+        }
+        
         propertyForm.scrollIntoView({ behavior: 'smooth' });
     };
 
@@ -372,5 +447,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('image-upload').value = ''; // Clear file input
         currentImages = [];
         renderImagePreviews();
+        
+        // Reset map
+        if (map && marker) {
+            const defaultLat = -33.4489;
+            const defaultLng = -70.6693;
+            map.setView([defaultLat, defaultLng], 13);
+            marker.setLatLng([defaultLat, defaultLng]);
+            updateLatLngInputs(defaultLat, defaultLng);
+        }
     }
 });
