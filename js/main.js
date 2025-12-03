@@ -110,15 +110,17 @@ function applyFilters() {
 function formatPriceWithCLP(price) {
     if (!price) return '';
     
-    const lowerPrice = price.toLowerCase();
+    const priceStr = String(price);
+    const lowerPrice = priceStr.toLowerCase();
+    
     // If it contains '$' or 'clp', assume it's pesos and don't convert
     if (lowerPrice.includes('$') || lowerPrice.includes('clp') || lowerPrice.includes('pesos')) {
-        return price;
+        return priceStr;
     }
 
     // Otherwise, assume UF (default)
     // Extract number
-    const cleanPrice = price.replace(/\./g, '').replace(/,/g, '.');
+    const cleanPrice = priceStr.replace(/\./g, '').replace(/,/g, '.');
     const match = cleanPrice.match(/[\d\.]+/);
     
     if (match) {
@@ -127,10 +129,10 @@ function formatPriceWithCLP(price) {
             const clpValue = Math.round(ufValue * 39500);
             // Format CLP with dots
             const clpFormatted = clpValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            return `${price} <span style="color: #888; font-size: 0.8em; display: block;">(aprox. $${clpFormatted})</span>`;
+            return `${priceStr} <span style="color: #888; font-size: 0.8em; display: block;">(aprox. $${clpFormatted})</span>`;
         }
     }
-    return price;
+    return priceStr;
 }
 
 function renderProperties(properties) {
