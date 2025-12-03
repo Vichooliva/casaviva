@@ -72,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const propertyData = {
                 title: document.getElementById('title').value,
+                operation: document.getElementById('operation').value,
+                currency: document.getElementById('currency').value,
                 location: document.getElementById('location').value,
                 price: document.getElementById('price').value,
                 description: document.getElementById('description').value,

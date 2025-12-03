@@ -107,32 +107,42 @@ function applyFilters() {
     renderProperties(filtered);
 }
 
-function formatPriceWithCLP(price) {
+function formatPriceWithCLP(price, currency) {
     if (!price) return '';
     
-    const priceStr = String(price);
-    const lowerPrice = priceStr.toLowerCase();
-    
-    // If it contains '$' or 'clp', assume it's pesos and don't convert
-    if (lowerPrice.includes('$') || lowerPrice.includes('clp') || lowerPrice.includes('pesos')) {
-        return priceStr;
-    }
-
-    // Otherwise, assume UF (default)
-    // Extract number
-    const cleanPrice = priceStr.replace(/\./g, '').replace(/,/g, '.');
+    // Clean price string to number
+    const cleanPrice = String(price).replace(/\./g, '').replace(/,/g, '.');
     const match = cleanPrice.match(/[\d\.]+/);
+    if (!match) return price;
     
-    if (match) {
-        const ufValue = parseFloat(match[0]);
-        if (!isNaN(ufValue)) {
-            const clpValue = Math.round(ufValue * 39500);
-            // Format CLP with dots
-            const clpFormatted = clpValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            return `${priceStr} <span style="color: #888; font-size: 0.8em; display: block;">(aprox. $${clpFormatted})</span>`;
+    const priceValue = parseFloat(match[0]);
+    const UF_VALUE = 39500;
+
+    // Determine currency if not provided (backward compatibility)
+    let effectiveCurrency = currency;
+    if (!effectiveCurrency) {
+        const lowerPrice = String(price).toLowerCase();
+        if (lowerPrice.includes('$') || lowerPrice.includes('clp') || lowerPrice.includes('pesos')) {
+            effectiveCurrency = 'CLP';
+        } else {
+            effectiveCurrency = 'UF';
         }
     }
-    return priceStr;
+
+    let mainPriceDisplay = '';
+    let approxDisplay = '';
+
+    if (effectiveCurrency === 'UF') {
+        mainPriceDisplay = `UF ${priceValue.toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 2})}`;
+        const clpValue = Math.round(priceValue * UF_VALUE);
+        approxDisplay = `$${clpValue.toLocaleString('es-CL')}`;
+    } else {
+        mainPriceDisplay = `$${priceValue.toLocaleString('es-CL')}`;
+        const ufValue = priceValue / UF_VALUE;
+        approxDisplay = `UF ${ufValue.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+
+    return `${mainPriceDisplay} <span style="color: #888; font-size: 0.8em; display: block;">(aprox. ${approxDisplay})</span>`;
 }
 
 function renderProperties(properties) {
@@ -153,6 +163,9 @@ function renderProperties(properties) {
         
         const isSold = property.status === 'sold';
         const ribbonHtml = isSold ? '<div class="ribbon"></div>' : '';
+        
+        const operationTag = property.operation ? 
+            `<span class="operation-tag ${property.operation}">${property.operation === 'venta' ? 'Venta' : 'Arriendo'}</span>` : '';
 
         // Check if favorite
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
@@ -168,14 +181,15 @@ function renderProperties(properties) {
 
         card.innerHTML = `
             ${ribbonHtml}
-            <button class="fav-btn" onclick="toggleFavorite('${property.id}', this)" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.5); border: none; color: ${isFav ? '#ff6b6b' : 'white'}; font-size: 1.5rem; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
-                <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
-            </button>
+            <div class="card-image-container">
+                ${operationTag}
+                <img src="${mainImage}" alt="${property.title}" class="card-image" onerror="this.src='https://via.placeholder.com/800x600?text=Imagen+No+Disponible'">
+            </div>on>
             <div class="card-image-container">
                 <img src="${mainImage}" alt="${property.title}" class="card-image" onerror="this.src='https://via.placeholder.com/800x600?text=Imagen+No+Disponible'">
             </div>
             <div class="card-content">
-                <h3 class="card-title">${property.title}</h3>
+                <div class="card-price">${formatPriceWithCLP(property.price, property.currency)}</div>
                 <div class="card-location">
                     <i class="fas fa-map-marker-alt"></i> ${property.location}
                 </div>
@@ -272,7 +286,7 @@ function renderDetail(property, container, whatsappNumber) {
                         <div class="card-location" style="font-size: 1.1rem; margin-bottom: 20px;">
                             <i class="fas fa-map-marker-alt"></i> ${property.location}
                         </div>
-                        ${isSold ? '<div style="background: #800000; color: white; padding: 10px; display: inline-block; margin-bottom: 20px; font-weight: bold;">VENDIDA</div>' : ''}
+                        <div class="detail-price">${formatPriceWithCLP(property.price, property.currency)}</div>0px; display: inline-block; margin-bottom: 20px; font-weight: bold;">VENDIDA</div>' : ''}
                         <div class="detail-price">${formatPriceWithCLP(property.price)}</div>
                         <p class="detail-description">${property.description}</p>
                         

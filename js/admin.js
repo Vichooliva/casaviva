@@ -317,6 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!prop) return;
 
         document.getElementById('title').value = prop.title;
+        document.getElementById('operation').value = prop.operation || 'venta';
+        document.getElementById('currency').value = prop.currency || 'UF';
         document.getElementById('price').value = prop.price;
         document.getElementById('location').value = prop.location;
         document.getElementById('lat').value = prop.lat || '';
@@ -377,6 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const propertyData = {
             title: document.getElementById('title').value,
+            operation: document.getElementById('operation').value,
+            currency: document.getElementById('currency').value,
             price: document.getElementById('price').value,
             location: document.getElementById('location').value,
             lat: document.getElementById('lat').value,

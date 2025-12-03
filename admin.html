@@ -65,8 +65,22 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="operation">Tipo de Operación</label>
+                    <select id="operation">
+                        <option value="venta">Venta</option>
+                        <option value="arriendo">Arriendo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label for="price">Precio</label>
-                    <input type="text" id="price" required placeholder="Ej: UF 15.000">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="price" required placeholder="Ej: 15.000" style="flex: 1;">
+                        <select id="currency" style="width: 100px;">
+                            <option value="UF">UF</option>
+                            <option value="CLP">CLP</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
