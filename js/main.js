@@ -3,7 +3,7 @@ let showFavoritesOnly = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     const grid = document.getElementById('properties-grid');
-    const WHATSAPP_NUMBER = '56998468181';
+    const WHATSAPP_NUMBER = '56976281090';
 
     // Only run if we are on the index page with the grid
     if (grid) {
@@ -218,7 +218,7 @@ window.toggleFavorite = (id, btn) => {
 // Function to load property details (called from property.html)
 function loadPropertyDetail(id) {
     const container = document.getElementById('property-detail-content');
-    const WHATSAPP_NUMBER = '56998468181';
+    const WHATSAPP_NUMBER = '56976281090';
 
     // Wait for Firebase
     const checkDb = setInterval(() => {
