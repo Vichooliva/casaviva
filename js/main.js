@@ -109,10 +109,20 @@ function applyFilters() {
 
 function formatPriceWithCLP(price) {
     if (!price) return '';
-    // Check if price is in UF
-    if (price.toLowerCase().includes('uf')) {
-        // Extract number
-        const ufValue = parseFloat(price.replace(/\./g, '').replace(/,/g, '.').match(/[\d\.]+/));
+    
+    const lowerPrice = price.toLowerCase();
+    // If it contains '$' or 'clp', assume it's pesos and don't convert
+    if (lowerPrice.includes('$') || lowerPrice.includes('clp') || lowerPrice.includes('pesos')) {
+        return price;
+    }
+
+    // Otherwise, assume UF (default)
+    // Extract number
+    const cleanPrice = price.replace(/\./g, '').replace(/,/g, '.');
+    const match = cleanPrice.match(/[\d\.]+/);
+    
+    if (match) {
+        const ufValue = parseFloat(match[0]);
         if (!isNaN(ufValue)) {
             const clpValue = Math.round(ufValue * 39500);
             // Format CLP with dots
