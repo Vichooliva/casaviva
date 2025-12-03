@@ -117,7 +117,7 @@ function formatPriceWithCLP(price) {
             const clpValue = Math.round(ufValue * 39500);
             // Format CLP with dots
             const clpFormatted = clpValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            return `${price} <span style="color: #888; font-size: 0.8em; display: block;">(approx. $${clpFormatted})</span>`;
+            return `${price} <span style="color: #888; font-size: 0.8em; display: block;">(aprox. $${clpFormatted})</span>`;
         }
     }
     return price;
