@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (grid) {
         // Setup Filter Listeners
         document.getElementById('filter-btn').addEventListener('click', applyFilters);
+        document.getElementById('operation-filter').addEventListener('change', applyFilters);
         document.getElementById('search-input').addEventListener('keyup', (e) => {
             if (e.key === 'Enter') applyFilters();
         });
@@ -55,6 +56,7 @@ function loadPropertiesFromFirebase() {
 
 function applyFilters() {
     const search = document.getElementById('search-input').value.toLowerCase();
+    const operationFilter = document.getElementById('operation-filter').value;
     const minPrice = parseFloat(document.getElementById('min-price').value) || 0;
     const maxPrice = parseFloat(document.getElementById('max-price').value) || Infinity;
     const sort = document.getElementById('sort-select').value;
@@ -63,14 +65,23 @@ function applyFilters() {
         // Text Search
         const matchText = p.title.toLowerCase().includes(search) || p.location.toLowerCase().includes(search);
         
-        // Price Parsing (Handle "UF 10.000" or "$100.000")
-        // This is a simple parser, assumes the first number found is the price value
-        const priceString = p.price.replace(/\./g, '').replace(/,/g, '.'); // Remove thousands separator
-        const priceValue = parseFloat(priceString.match(/[\d\.]+/)) || 0;
-        
-        // Note: This compares raw numbers. If mixing UF and CLP, this will be inaccurate without currency conversion.
-        // For now, we assume the user filters based on the dominant currency number.
-        const matchPrice = priceValue >= minPrice && priceValue <= maxPrice;
+        // Operation Filter
+        let matchOperation = true;
+        if (operationFilter !== 'all') {
+            // If property has no operation defined, we might want to show it or hide it. 
+            // For now, let's assume if it's undefined it doesn't match specific filters unless we want to be lenient.
+            // But better to match exact string.
+            matchOperation = p.operation === operationFilter;
+        }
+        // Favorites Filter
+        let matchFav = true;
+        if (showFavoritesOnly) {
+            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+            matchFav = favorites.includes(p.id);
+        }
+
+        return matchText && matchPrice && matchFav && matchOperation;
+    }); const matchPrice = priceValue >= minPrice && priceValue <= maxPrice;
 
         // Favorites Filter
         let matchFav = true;
