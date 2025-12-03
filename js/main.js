@@ -68,11 +68,14 @@ function applyFilters() {
         // Operation Filter
         let matchOperation = true;
         if (operationFilter !== 'all') {
-            // If property has no operation defined, we might want to show it or hide it. 
-            // For now, let's assume if it's undefined it doesn't match specific filters unless we want to be lenient.
-            // But better to match exact string.
             matchOperation = p.operation === operationFilter;
         }
+
+        // Price Parsing (Handle "UF 10.000" or "$100.000")
+        const priceString = p.price.replace(/\./g, '').replace(/,/g, '.'); // Remove thousands separator
+        const priceValue = parseFloat(priceString.match(/[\d\.]+/)) || 0;
+        const matchPrice = priceValue >= minPrice && priceValue <= maxPrice;
+
         // Favorites Filter
         let matchFav = true;
         if (showFavoritesOnly) {
@@ -81,16 +84,6 @@ function applyFilters() {
         }
 
         return matchText && matchPrice && matchFav && matchOperation;
-    }); const matchPrice = priceValue >= minPrice && priceValue <= maxPrice;
-
-        // Favorites Filter
-        let matchFav = true;
-        if (showFavoritesOnly) {
-            const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-            matchFav = favorites.includes(p.id);
-        }
-
-        return matchText && matchPrice && matchFav;
     });
 
     // Sorting
